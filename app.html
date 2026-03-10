@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Step 1: Installation Type -->
+        <div class="screen active" id="screen-1">
+            <header>
+                <a href="index.html" class="back-btn">← Back to Home</a>
+            </header>
+            <div class="content">
+                <h2>Select Installation Type</h2>
+                <div class="installation-grid">
+                    <div class="installation-card" data-type="residential">
+                        <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400" alt="Residential">
+                        <h3>Residential</h3>
+                    </div>
+                    <div class="installation-card" data-type="industrial">
+                        <img src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=400" alt="Industrial">
+                        <h3>Industrial</h3>
+                    </div>
+                    <div class="installation-card" data-type="commercial">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400" alt="Commercial">
+                        <h3>Commercial Building</h3>
+                    </div>
+                    <div class="installation-card" data-type="ground">
+                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400" alt="Ground">
+                        <h3>Ground Mounted</h3>
+                    </div>
+                </div>
+                <button class="primary-btn" id="next-1">Continue & Next</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Bill Upload -->
+        <div class="screen" id="screen-2">
+            <header>
+                <button class="back-btn">← Back</button>
+                <div class="progress">Step 1/5</div>
+            </header>
+            <div class="content">
+                <h2>Upload Your Electricity Bill</h2>
+                <div class="step-indicator">
+                    <span class="active">Upload Bill</span>
+                    <span>Panel Type</span>
+                    <span>Panel Selection</span>
+                    <span>Personal Info</span>
+                </div>
+
+                <p class="subtitle">Upload your electricity bill and our AI will automatically extract all the necessary information including consumption, provider, and billing details.</p>
+
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">📄</div>
+                        <h3>Drag & Drop your bill here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="bill-upload" accept=".pdf,.jpg,.jpeg,.png" hidden>
+                        <div class="supported-formats">
+                            <span>Supported formats: PDF, JPG, PNG</span>
+                        </div>
+                    </div>
+
+                    <div class="upload-preview" id="upload-preview" style="display: none;">
+                        <div class="preview-header">
+                            <h3>Uploaded Bill</h3>
+                            <button class="remove-btn" id="remove-bill">✕</button>
+                        </div>
+                        <div class="preview-content">
+                            <div class="file-icon">📄</div>
+                            <div class="file-info">
+                                <p class="file-name" id="file-name">electricity_bill.pdf</p>
+                                <p class="file-size" id="file-size">2.4 MB</p>
+                            </div>
+                        </div>
+                        <div class="extraction-status" id="extraction-status">
+                            <div class="status-loading">
+                                <div class="spinner"></div>
+                                <p>Extracting bill information...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extracted-info" id="extracted-info" style="display: none;">
+                        <div class="extracted-header">
+                            <h3>Extracted Information</h3>
+                            <button class="edit-toggle-btn" id="edit-toggle">✏️ Edit Details</button>
+                        </div>
+                        <div class="info-grid" id="info-grid">
+                            <div class="info-item">
+                                <label>Provider</label>
+                                <p class="info-display" id="extracted-provider">-</p>
+                                <input type="text" class="info-edit" id="edit-provider" style="display: none;">
+                            </div>
+                            <div class="info-item">
+                                <label>Postal Code</label>
+                                <p class="info-display" id="extracted-pincode">-</p>
+                                <input type="text" class="info-edit" id="edit-pincode" style="display: none;">
+                            </div>
+                            <div class="info-item">
+                                <label>Billing Period</label>
+                                <p class="info-display" id="extracted-period">-</p>
+                                <input type="text" class="info-edit" id="edit-period" style="display: none;">
+                            </div>
+                            <div class="info-item">
+                                <label>Bill Amount (₹)</label>
+                                <p class="info-display" id="extracted-amount">-</p>
+                                <input type="text" class="info-edit" id="edit-amount" style="display: none;">
+                            </div>
+                            <div class="info-item">
+                                <label>Units Consumed</label>
+                                <p class="info-display" id="extracted-units">-</p>
+                                <input type="text" class="info-edit" id="edit-units" style="display: none;">
+                            </div>
+                            <div class="info-item">
+                                <label>Billing Date</label>
+                                <p class="info-display" id="extracted-date">-</p>
+                                <input type="text" class="info-edit" id="edit-date" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="edit-actions" id="edit-actions" style="display: none;">
+                            <button class="save-btn" id="save-edits">💾 Save Changes</button>
+                            <button class="cancel-btn" id="cancel-edits">✕ Cancel</button>
+                        </div>
+                        <div class="edit-note" id="view-note">
+                            <p>💡 Review the extracted details and click "Edit Details" if you need to make any corrections</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="primary-btn" id="calculate" disabled>Continue to Results</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Results -->
+        <div class="screen" id="screen-3">
+            <header>
+                <button class="back-btn">← Back</button>
+                <div class="progress">Step 2/5</div>
+            </header>
+            <div class="content">
+                <h2>Energy Calculator Result</h2>
+                <div class="step-indicator">
+                    <span>Calculator</span>
+                    <span class="active">Panel Type</span>
+                    <span>Panel Selection</span>
+                    <span>Personal Info</span>
+                </div>
+
+                <div class="result-card">
+                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400" alt="Solar" class="result-img">
+                    <div class="result-value">
+                        <h1 id="power-result">3.68kW</h1>
+                        <button class="edit-icon">✏️</button>
+                    </div>
+                    <p class="result-desc">Your recommended solar capacity based on your monthly bill of ₹<span id="bill-display">6,000</span></p>
+                </div>
+
+                <!-- Detailed Analytics Dashboard -->
+                <div class="analytics-dashboard" id="analytics-dashboard">
+                    <div class="dashboard-header">
+                        <h2>📊 Detailed Energy Analysis</h2>
+                        <p>Comprehensive breakdown of your energy consumption and solar savings potential</p>
+                    </div>
+
+                    <!-- Key Metrics Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card highlight">
+                            <div class="metric-icon">⚡</div>
+                            <div class="metric-content">
+                                <label>Average Monthly Consumption</label>
+                                <h3 id="avg-consumption">320 kWh</h3>
+                                <p class="metric-change">Based on your bill data</p>
+                            </div>
+                        </div>
+
+                        <div class="metric-card highlight">
+                            <div class="metric-icon">💰</div>
+                            <div class="metric-content">
+                                <label>Annual Electricity Cost</label>
+                                <h3 id="annual-cost">₹77,400</h3>
+                                <p class="metric-change">Without solar panels</p>
+                            </div>
+                        </div>
+
+                        <div class="metric-card success">
+                            <div class="metric-icon">🌞</div>
+                            <div class="metric-content">
+                                <label>Potential Annual Savings</label>
+                                <h3 id="annual-savings">₹65,790</h3>
+                                <p class="metric-change positive">↑ 85% reduction</p>
+                            </div>
+                        </div>
+
+                        <div class="metric-card success">
+                            <div class="metric-icon">📉</div>
+                            <div class="metric-content">
+                                <label>Payback Period</label>
+                                <h3 id="payback-period">4.2 years</h3>
+                                <p class="metric-change">Return on investment</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Consumption Chart -->
+                    <div class="dashboard-section">
+                        <h3>📈 Monthly Consumption Pattern</h3>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="consumption-chart">
+                                <!-- Chart bars will be generated by JS -->
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: var(--gradient-1);"></span>
+                                    <span>Monthly Consumption (kWh)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost Breakdown -->
+                    <div class="dashboard-section">
+                        <h3>💵 Cost Analysis</h3>
+                        <div class="cost-comparison">
+                            <div class="cost-column">
+                                <h4>Without Solar</h4>
+                                <div class="cost-items">
+                                    <div class="cost-item">
+                                        <span>Monthly Bill</span>
+                                        <strong id="monthly-bill-without">₹6,450</strong>
+                                    </div>
+                                    <div class="cost-item">
+                                        <span>Annual Cost</span>
+                                        <strong id="annual-cost-without">₹77,400</strong>
+                                    </div>
+                                    <div class="cost-item">
+                                        <span>25-Year Cost</span>
+                                        <strong id="lifetime-cost-without">₹19,35,000</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="vs-divider">
+                                <span>VS</span>
+                            </div>
+
+                            <div class="cost-column solar">
+                                <h4>With Solar</h4>
+                                <div class="cost-items">
+                                    <div class="cost-item">
+                                        <span>Monthly Bill</span>
+                                        <strong id="monthly-bill-with">₹968</strong>
+                                    </div>
+                                    <div class="cost-item">
+                                        <span>Annual Cost</span>
+                                        <strong id="annual-cost-with">₹11,610</strong>
+                                    </div>
+                                    <div class="cost-item">
+                                        <span>25-Year Cost</span>
+                                        <strong id="lifetime-cost-with">₹2,90,250</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="savings-highlight">
+                            <p>💡 Total Savings over 25 years: <strong id="total-savings">₹16,44,750</strong></p>
+                        </div>
+                    </div>
+
+                    <!-- Solar System Details -->
+                    <div class="dashboard-section">
+                        <h3>☀️ Solar System Requirements</h3>
+                        <div class="solar-details-grid">
+                            <div class="solar-detail-card">
+                                <label>Required System Size</label>
+                                <h4 id="system-size">4.3 kW</h4>
+                                <p>Including 15% buffer for losses</p>
+                            </div>
+                            <div class="solar-detail-card">
+                                <label>Daily Generation</label>
+                                <h4 id="daily-generation">17.2 kWh</h4>
+                                <p>Average per day</p>
+                            </div>
+                            <div class="solar-detail-card">
+                                <label>Annual Generation</label>
+                                <h4 id="annual-generation">6,278 kWh</h4>
+                                <p>Expected yearly output</p>
+                            </div>
+                            <div class="solar-detail-card">
+                                <label>System Efficiency</label>
+                                <h4 id="system-efficiency">85%</h4>
+                                <p>After all losses</p>
+                            </div>
+                            <div class="solar-detail-card">
+                                <label>Number of Panels</label>
+                                <h4 id="panel-count">11-13</h4>
+                                <p>Based on 400W panels</p>
+                            </div>
+                            <div class="solar-detail-card">
+                                <label>Roof Space Required</label>
+                                <h4 id="roof-space">430 sq ft</h4>
+                                <p>Approximate area needed</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tariff Information -->
+                    <div class="dashboard-section">
+                        <h3>📋 Tariff Details</h3>
+                        <div class="tariff-table">
+                            <div class="tariff-row header">
+                                <span>Consumption Slab</span>
+                                <span>Rate per Unit</span>
+                                <span>Your Usage</span>
+                            </div>
+                            <div class="tariff-row">
+                                <span>0-100 units</span>
+                                <span>₹3.50</span>
+                                <span id="slab-1">100 units</span>
+                            </div>
+                            <div class="tariff-row">
+                                <span>101-300 units</span>
+                                <span>₹7.50</span>
+                                <span id="slab-2">200 units</span>
+                            </div>
+                            <div class="tariff-row">
+                                <span>301-500 units</span>
+                                <span>₹10.50</span>
+                                <span id="slab-3">20 units</span>
+                            </div>
+                            <div class="tariff-row">
+                                <span>Above 500 units</span>
+                                <span>₹12.00</span>
+                                <span id="slab-4">0 units</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Environmental Impact -->
+                    <div class="dashboard-section environmental">
+                        <h3>🌍 Environmental Impact</h3>
+                        <div class="impact-grid">
+                            <div class="impact-card">
+                                <div class="impact-icon">🌳</div>
+                                <h4 id="trees-equivalent">78</h4>
+                                <p>Trees planted equivalent per year</p>
+                            </div>
+                            <div class="impact-card">
+                                <div class="impact-icon">🚗</div>
+                                <h4 id="co2-reduction">3.8 tons</h4>
+                                <p>CO₂ emissions reduced annually</p>
+                            </div>
+                            <div class="impact-card">
+                                <div class="impact-icon">⛽</div>
+                                <h4 id="fuel-equivalent">1,680 L</h4>
+                                <p>Petrol equivalent saved per year</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="primary-btn" id="next-3">Continue & Next</button>
+                <button class="secondary-btn" id="edit-bill">Edit Bill</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Panel Selection -->
+        <div class="screen" id="screen-4">
+            <header>
+                <button class="back-btn">← Back</button>
+            </header>
+            <div class="content">
+                <div class="section-header">
+                    <h2>Solar Panel Manufacturer</h2>
+                    <button class="sort-btn">⇅ Sort</button>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-filter="subsidy">With subsidy</button>
+                    <button class="filter-btn" data-filter="no-subsidy">Without subsidy</button>
+                </div>
+
+                <div class="brands-carousel">
+                    <div class="brand-card" data-brand="brand1">
+                        <div class="brand-logo">W</div>
+                        <p class="brand-name">WAAREE</p>
+                        <p class="brand-price">₹1.79 Crore</p>
+                    </div>
+                    <div class="brand-card" data-brand="brand2">
+                        <div class="brand-logo">N</div>
+                        <p class="brand-name">NAVITAS</p>
+                        <p class="brand-price">₹1.79 Crore</p>
+                    </div>
+                    <div class="brand-card" data-brand="brand3">
+                        <div class="brand-logo">P</div>
+                        <p class="brand-name">PAHAL</p>
+                        <p class="brand-price">₹1.79 Crore</p>
+                    </div>
+                </div>
+                <button class="link-btn">Compare Brands</button>
+
+                <div class="section-header">
+                    <h2>Inverter</h2>
+                    <button class="sort-btn">⇅ Sort</button>
+                </div>
+
+                <div class="brands-carousel">
+                    <div class="brand-card" data-inverter="inv1">
+                        <div class="brand-logo">S</div>
+                        <p class="brand-name">SOLARYAAN</p>
+                        <p class="brand-price">₹19,900</p>
+                    </div>
+                </div>
+                <button class="link-btn">Compare Inverters</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Comparison -->
+        <div class="screen" id="screen-5">
+            <header>
+                <button class="back-btn">← Back</button>
+            </header>
+            <div class="content">
+                <h2>Solar Panel Comparison</h2>
+                <p class="subtitle">Compare different solar panel manufacturers and select the best fit for your needs</p>
+
+                <div class="comparison-table">
+                    <div class="comparison-header">
+                        <div class="param-col">
+                            <h3>Technical Parameters</h3>
+                        </div>
+                        <div class="brand-col">
+                            <button class="add-brand">+ Add</button>
+                        </div>
+                        <div class="brand-col">
+                            <button class="add-brand">+ Add</button>
+                        </div>
+                        <div class="brand-col">
+                            <button class="add-brand">+ Add</button>
+                        </div>
+                    </div>
+
+                    <div class="comparison-row">
+                        <div class="param-name">Module efficiency</div>
+                        <div class="param-value">-</div>
+                        <div class="param-value">-</div>
+                        <div class="param-value">-</div>
+                    </div>
+                    <div class="comparison-row alt">
+                        <div class="param-name">Product Warranty</div>
+                        <div class="param-value">-</div>
+                        <div class="param-value">-</div>
+                        <div class="param-value">-</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="param-name">Performance Warranty</div>
+                        <div class="param-value">-</div>
+                        <div class="param-value">-</div>
+                        <div class="param-value">-</div>
+                    </div>
+
+                    <div class="preference-row">
+                        <div class="param-name">My preference</div>
+                        <button class="select-btn">Select</button>
+                        <button class="select-btn">Select</button>
+                        <button class="select-btn">Select</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Final Selection -->
+        <div class="screen" id="screen-6">
+            <header>
+                <button class="back-btn">← Back</button>
+            </header>
+            <div class="content">
+                <div class="section-header">
+                    <h2>Solar Panel Manufacturer</h2>
+                    <button class="sort-btn">⇅ Sort</button>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-btn active">With subsidy</button>
+                    <button class="filter-btn">Without subsidy</button>
+                </div>
+
+                <div class="selected-brand">
+                    <div class="brand-logo-large">A</div>
+                    <p class="brand-name">ADANI</p>
+                    <p class="brand-price">₹1,99,029.08</p>
+                </div>
+                <button class="link-btn">Compare Brands</button>
+
+                <div class="cost-breakdown">
+                    <h3>Selected Solar Panel Manufacturer</h3>
+                    <div class="brand-badge">adani</div>
+                    
+                    <div class="cost-row">
+                        <span>Tentative amount</span>
+                        <span class="amount">₹1,99,029.08</span>
+                    </div>
+                    <div class="cost-row highlight">
+                        <span>Subsidy amount</span>
+                        <span class="amount green">78,000</span>
+                    </div>
+                    <div class="cost-row">
+                        <span>Effective amount</span>
+                        <span class="amount">₹1,21,029.08</span>
+                    </div>
+                    <div class="cost-row">
+                        <span>Return on investment(ROI)</span>
+                        <span class="amount">57.05%</span>
+                    </div>
+                    <div class="cost-row">
+                        <span>Break even</span>
+                        <span class="amount">1.75 years</span>
+                    </div>
+                </div>
+
+                <button class="primary-btn">Continue & Next</button>
+                <button class="secondary-btn">Go with Customize</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
