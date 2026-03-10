@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd solar-app && npm run build",
+  "outputDirectory": "solar-app/dist",
+  "installCommand": "cd solar-app && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
